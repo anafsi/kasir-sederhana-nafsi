@@ -1,7 +1,7 @@
 # Aplikasi Kasir Sederhana
+![Tampilan Website](preview.png)
 
-Aplikasi Kasir berbasis Web menggunakan PHP Native dan Database MySQL.
-Dibuat untuk memenuhi tugas mata kuliah Pemrograman Web.
+Aplikasi Kasir Sederhana berbasis Web menggunakan PHP Native dan Database MySQL.
 
 ## Fitur
 1. Input transaksi penjualan.
