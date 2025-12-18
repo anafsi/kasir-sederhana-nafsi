@@ -29,13 +29,18 @@ Berikut adalah diagram alur logika aplikasi ini:
 
 ### A. Use Case Diagram
 ```mermaid
-usecaseDiagram 
+usecaseDiagram
     actor Kasir
-    Kasir --> (Input Transaksi)
-    Kasir --> (Lihat Dashboard Pendapatan)
-    Kasir --> (Ubah Status Hutang ke Lunas)
-    Kasir --> (Reset Data Harian)
+    
+    package "Sistem Kasir" {
+        Kasir --> (Input Transaksi)
+        Kasir --> (Lihat Dashboard Pendapatan)
+        Kasir --> (Ubah Status Hutang ke Lunas)
+        Kasir --> (Reset Data Harian)
+    }
 
+### B. Activity Diagram
+```mermaid
 graph TD
     A[Mulai] --> B[Input Nama & Pilih Barang]
     B --> C{Status Bayar?}
@@ -46,14 +51,21 @@ graph TD
     F --> H[Selesai]
     G --> H
 
+### C. Sequence Diagram
+```mermaid
 sequenceDiagram
     participant User as Kasir
-    participant View as Index.php
+    participant UI as Index.php
     participant DB as Database
     
-    User->>View: Input Data & Klik Simpan
-    View->>View: Validasi Input
-    View->>DB: INSERT INTO transaksi VALUES (...)
-    DB-->>View: Berhasil Disimpan
-    View-->>User: Tampilkan SweetAlert (Sukses)
-    View->>User: Refresh Data Tabel
+    User->>UI: Input Data & Klik Simpan
+    UI->>UI: Validasi Input
+    UI->>DB: INSERT INTO transaksi...
+    DB-->>UI: Berhasil Disimpan
+    
+    alt Sukses
+        UI-->>User: Tampilkan Notifikasi SweetAlert
+        UI->>User: Refresh Data Tabel
+    else Gagal
+        UI-->>User: Tampilkan Pesan Error
+    end
