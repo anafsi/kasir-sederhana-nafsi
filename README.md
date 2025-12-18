@@ -1,77 +1,59 @@
 # Aplikasi Kasir Sederhana (Point of Sales)
 
-![Tampilan Website](preview.png)
-*(Pastikan file screenshot website Anda di-upload dengan nama preview.png)*
+![Mockup Aplikasi](preview.png)
 
 ## 1. Deskripsi Project
-Aplikasi Kasir Sederhana adalah sistem berbasis web yang dirancang untuk membantu pencatatan transaksi penjualan pada usaha kecil (seperti kantin atau warung). Sistem ini dibangun untuk menggantikan pencatatan manual di buku, meminimalisir kesalahan hitung, dan mempermudah pemantauan status pembayaran (Lunas atau Hutang) serta rekapitulasi pendapatan harian secara *real-time*.
+Aplikasi Kasir Sederhana adalah sistem berbasis web yang dirancang untuk membantu pencatatan transaksi penjualan pada kantin atau toko kelontong skala kecil. Sistem ini mengatasi masalah pencatatan manual dengan menyediakan fitur input pesanan yang cepat, pemantauan status pembayaran (Lunas vs Hutang), serta rekapitulasi pendapatan harian secara *real-time*.
 
 ## 2. User Story
 Sebagai pengguna utama aplikasi (Kasir), berikut adalah kebutuhan interaksinya:
-* **Sebagai Kasir**, saya ingin mencatat nama pembeli, memilih barang, dan harga otomatis muncul agar transaksi lebih cepat.
-* **Sebagai Kasir**, saya ingin menentukan status pembayaran ("Lunas" atau "Hutang") untuk membedakan uang tunai yang masuk dan piutang.
-* **Sebagai Kasir**, saya ingin melihat dashboard total pendapatan dan total hutang secara langsung tanpa menghitung manual.
-* **Sebagai Kasir**, saya ingin menandai hutang menjadi lunas ketika pembeli membayar tagihannya di kemudian hari.
-* **Sebagai Kasir**, saya ingin mereset seluruh data transaksi di akhir hari/periode untuk memulai pembukuan baru.
+* **Sebagai Kasir**, saya ingin mencatat nama pembeli dan barang yang dibeli agar stok keluar tercatat.
+* **Sebagai Kasir**, saya ingin memilih status pembayaran "Hutang" atau "Lunas" untuk membedakan uang yang sudah diterima dan yang belum.
+* **Sebagai Kasir**, saya ingin melihat dashboard total uang masuk dan total piutang agar tahu pendapatan hari ini.
+* **Sebagai Kasir**, saya ingin menekan tombol "Lunasi" pada daftar hutang ketika pembeli membayar tagihannya.
+* **Sebagai Kasir**, saya ingin mereset semua data transaksi di akhir hari untuk memulai pembukuan baru besok.
 
 ## 3. SRS (Software Requirements Specification)
 
 ### Feature List (Fungsional):
-1.  **Input Transaksi Cepat:** Form input yang memisahkan data barang (harga otomatis terisi) dan data pembeli.
-2.  **Dashboard Monitoring:** Widget informasi "Uang Masuk" dan "Total Piutang" yang terupdate otomatis saat ada transaksi baru.
-3.  **Manajemen Status Bayar:** Sistem pencatatan status `Lunas` (hijau) dan `Hutang` (merah).
-4.  **Fitur Pelunasan:** Tombol aksi (Checklist) pada tabel hutang untuk mengubah status transaksi menjadi lunas (Update Database).
-5.  **Rekap Barang Terlaris:** Tabel ringkasan jumlah item yang terjual per jenis barang.
-6.  **Riwayat Log:** Menampilkan daftar transaksi berdasarkan waktu, dipisah antara tabel lunas dan tabel hutang.
-7.  **Reset Data (Truncate):** Fitur untuk menghapus seluruh data database dengan konfirmasi keamanan.
+1.  **Input Transaksi:** Form untuk memasukkan nama pembeli, memilih jenis barang (dengan harga otomatis), dan status bayar.
+2.  **Dashboard Monitoring:** Widget informasi yang menampilkan total nominal "Uang Masuk" dan "Total Piutang" secara otomatis.
+3.  **Rekap Barang:** Tabel yang mengelompokkan jumlah barang yang terjual (misal: Roti terjual 5 pcs).
+4.  **Manajemen Hutang:** Fitur untuk mengubah status transaksi dari "Hutang" menjadi "Lunas" (Update Database).
+5.  **Riwayat Transaksi:** Menampilkan log pembeli berdasarkan waktu/tanggal, dipisah antara tabel Lunas dan Hutang.
+6.  **Reset Data:** Fitur keamanan untuk menghapus seluruh riwayat transaksi (Truncate) dengan konfirmasi peringatan.
 
 ## 4. UML (Unified Modeling Language)
 
-Berikut adalah diagram alur logika aplikasi yang digambarkan menggunakan Mermaid JS (Rendered by GitHub):
+Berikut adalah diagram alur logika aplikasi ini:
 
 ### A. Use Case Diagram
 ```mermaid
 usecaseDiagram
     actor Kasir
-    
-    package "Sistem Kasir" {
-        Kasir --> (Input Transaksi Barang)
-        Kasir --> (Lihat Dashboard & Rekap)
-        Kasir --> (Kelola Hutang / Pelunasan)
-        Kasir --> (Reset Data Harian)
-    }
+    Kasir --> (Input Transaksi)
+    Kasir --> (Lihat Dashboard Pendapatan)
+    Kasir --> (Ubah Status Hutang ke Lunas)
+    Kasir --> (Reset Data Harian)
+
 graph TD
-    A[Start] --> B[Kasir Membuka Web]
-    B --> C[Input Nama & Pilih Barang]
-    C --> D{Status Pembayaran?}
-    D -- Lunas --> E[Simpan ke DB status 'Lunas']
-    D -- Hutang --> F[Simpan ke DB status 'Hutang']
-    E --> G[Tampil di Tabel Lunas & Update Saldo Masuk]
-    F --> H[Tampil di Tabel Hutang & Update Saldo Piutang]
-    G --> I[End]
-    H --> I
+    A[Mulai] --> B[Input Nama & Pilih Barang]
+    B --> C{Status Bayar?}
+    C -- Lunas --> D[Simpan ke DB status 'Lunas']
+    C -- Hutang --> E[Simpan ke DB status 'Hutang']
+    D --> F[Tampil di Tabel Lunas & Tambah Uang Masuk]
+    E --> G[Tampil di Tabel Hutang & Tambah Piutang]
+    F --> H[Selesai]
+    G --> H
+
 sequenceDiagram
     participant User as Kasir
-    participant UI as Index.php
-    participant DB as Database MySQL
+    participant View as Index.php
+    participant DB as Database
     
-    User->>UI: Input Nama, Barang, Status
-    User->>UI: Klik Tombol Simpan
-    UI->>UI: Validasi Input
-    UI->>DB: INSERT INTO transaksi VALUES (...)
-    DB-->>UI: Return Success/Fail
-    
-    alt Berhasil
-        UI-->>User: Tampilkan Notifikasi (SweetAlert)
-        UI->>User: Refresh Halaman & Update Tabel
-    else Gagal
-        UI-->>User: Tampilkan Pesan Error
-    end
-## 5. Mock-Up / Antarmuka
-Berikut adalah tampilan antarmuka aplikasi yang sudah jadi:
-
-![Tampilan Aplikasi Kasir](preview.png)
-
-Desain antarmuka pengguna (UI) dirancang dengan prinsip **Clean & Minimalist**:
-* **Layout:** Terbagi menjadi dua kolom utama (Kiri: Input & Kontrol, Kanan: Informasi & Data).
-* **Color Coding:** Menggunakan warna **Hijau** untuk lunas dan **Merah** untuk hutang.
+    User->>View: Input Data & Klik Simpan
+    View->>View: Validasi Input
+    View->>DB: INSERT INTO transaksi VALUES (...)
+    DB-->>View: Berhasil Disimpan
+    View-->>User: Tampilkan SweetAlert (Sukses)
+    View->>User: Refresh Data Tabel
