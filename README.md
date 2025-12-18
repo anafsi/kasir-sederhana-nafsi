@@ -29,13 +29,12 @@ Berikut adalah diagram alur logika aplikasi ini:
 
 ### A. Use Case Diagram
 ```mermaid
-usecaseDiagram {
+usecaseDiagram 
     actor Kasir
     Kasir --> (Input Transaksi)
     Kasir --> (Lihat Dashboard Pendapatan)
     Kasir --> (Ubah Status Hutang ke Lunas)
     Kasir --> (Reset Data Harian)
-}
 
 graph TD
     A[Mulai] --> B[Input Nama & Pilih Barang]
